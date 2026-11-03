@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XO Game - Rama & Banan</title>
+    <style>
+        #all {
+            display: grid;
+            justify-content: center;
+            margin-top: 40px;
+            font-family: Arial, sans-serif;
+        }
+        #board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            justify-content: center;
+            gap: 5px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            font-size: 70px;
+            line-height: 100px; 
+            border: solid #bdc3c7 2px;
+            cursor: pointer;
+            background-color: #f4f6f7;
+            transition: background-color 0.3s, color 0.3s; 
+        }
+        .cell:hover {
+            background-color: #eaeded; 
+        }
+        p {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 0 auto;
+            display: block;
+            background-color: #007bff; 
+            color: white; 
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3; 
+        }
+        .winning-cell {
+            background-color: #2ecc71 !important; 
+            color: white !important; 
+            font-weight: bold;
+            transform: scale(1.05); 
+        }
+        .scrolling-text {
+            margin-top: 40px;
+            width: 310px;
+            overflow: hidden;
+        }
+        .scrolling-text marquee {
+            font-size: 18px;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="all">
+        <p id="winnerPar" style="display:none; color: green;">🎉 Player <span id="winner"></span> Won! 🎉</p>
+        <p id="turnPar">PLAYER TURN: <span id="turnSpan">X</span></p>
+        
+        <div id="board">
+            <div class="cell" id="c0" onclick="play(this)"></div>
+            <div class="cell" id="c1" onclick="play(this)"></div>
+            <div class="cell" id="c2" onclick="play(this)"></div>
+            <div class="cell" id="c3" onclick="play(this)"></div>
+            <div class="cell" id="c4" onclick="play(this)"></div>
+            <div class="cell" id="c5" onclick="play(this)"></div>
+            <div class="cell" id="c6" onclick="play(this)"></div>
+            <div class="cell" id="c7" onclick="play(this)"></div>
+            <div class="cell" id="c8" onclick="play(this)"></div>
+        </div>
+        <br>
+        <button id="restart" style="display:none;" onclick="resetGame()">Play Again</button>
+        
+        <div class="scrolling-text">
+            <marquee behavior="scroll" direction="left" scrollamount="4">✨ Designed by Banan &Rama Al_hajabdo  ✨</marquee>
+        </div>
+    </div>
+
+    <script>
+    var currentTurn = "X";
+    var gameOver = false;
+
+    function play(element) {
+        if (gameOver || element.innerHTML !== "") {
+            return;
+        }
+
+        element.innerHTML = currentTurn;
+        
+        if (currentTurn === "X") {
+            element.style.color = "#3498db";
+        } else {
+            element.style.color = "#e74c3c";
+        }
+
+        checkWin();
+
+        if (!gameOver) {
+            if (currentTurn === "X") {
+                currentTurn = "O";
+            } else {
+                currentTurn = "X";
+            }
+            document.getElementById("turnSpan").innerHTML = currentTurn;
+        }
+    }
+
+    function checkWin() {
+        var c0 = document.getElementById("c0");
+        var c1 = document.getElementById("c1");
+        var c2 = document.getElementById("c2");
+        var c3 = document.getElementById("c3");
+        var c4 = document.getElementById("c4");
+        var c5 = document.getElementById("c5");
+        var c6 = document.getElementById("c6");
+        var c7 = document.getElementById("c7");
+        var c8 = document.getElementById("c8");
+
+        var b0 = c0.innerHTML;
+        var b1 = c1.innerHTML;
+        var b2 = c2.innerHTML;
+        var b3 = c3.innerHTML;
+        var b4 = c4.innerHTML;
+        var b5 = c5.innerHTML;
+        var b6 = c6.innerHTML;
+        var b7 = c7.innerHTML;
+        var b8 = c8.innerHTML;
+
+        var winFields = []; 
+
+        if (b0!=='' && b0===b1 && b1===b2) { winFields = [c0, c1, c2]; } 
+        else if (b3!=='' && b3===b4 && b4===b5) { winFields = [c3, c4, c5]; } 
+        else if (b6!=='' && b6===b7 && b7===b8) { winFields = [c6, c7, c8]; } 
+        else if (b0!=='' && b0===b3 && b3===b6) { winFields = [c0, c3, c6]; } 
+        else if (b1!=='' && b1===b4 && b4===b7) { winFields = [c1, c4, c7]; } 
+        else if (b2!=='' && b2===b5 && b5===b8) { winFields = [c2, c5, c8]; } 
+        else if (b0!=='' && b0===b4 && b4===b8) { winFields = [c0, c4, c8]; } 
+        else if (b2!=='' && b2===b4 && b4===b6) { winFields = [c2, c4, c6]; } 
+
+        if (winFields.length > 0) {
+            for (var i = 0; i < winFields.length; i++) {
+                winFields[i].classList.add("winning-cell");
+            }
+
+            document.getElementById("winner").innerHTML = currentTurn;
+            document.getElementById("winnerPar").style.display = "block";
+            document.getElementById("restart").style.display = "block";
+            document.getElementById("turnPar").style.display = "none";
+            gameOver = true;
+        }
+    }
+
+    function resetGame() {
+        location.reload();
+    }
+    </script>
+</body>
+</html>
